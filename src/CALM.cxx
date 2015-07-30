@@ -166,7 +166,7 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
          XYZrand[j][i]=mRandom->Gaus(0,mXYZ[i]);
       }
    }
-   //________CALM part
+   //________Genbod part
    // generate total momentum for given energy
    double TotEnergy;
    int control=0;

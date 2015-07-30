@@ -177,7 +177,7 @@ void Event::ReadParameters()
 			mDistribution = 1;
 		tMultMin	= sMainConfig->GetParameter("MultiplicityMin");
 		tMultMax	= sMainConfig->GetParameter("MultiplicityMax");
-		tEnergy	= sMainConfig->GetParameter("CALMEnergy");
+		tEnergy	= sMainConfig->GetParameter("GenbodEnergy");
 		tEventType	= sMainConfig->GetParameter("EventType");
 		tConvert<<tMultMin<<' '<<tMultMax<<' '<<tEnergy<<' '<<tEventType;
 		tConvert>>tMultMinInt>>tMultMaxInt>>tEnergyDouble>>tEventTypeEnum;
