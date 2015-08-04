@@ -197,10 +197,21 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
             mParticlesThisEvent.clear();
             return 99;
          }
-         double weight;
+         double weight=0;
          TLorentzVector* tmp;
-         weight = event.Generate();
-         if(weight != weight) weight=0;
+         double tmpweight;
+         int controltmp=0;
+         do
+         {
+            weight = event.Generate();
+            if(weight != weight) weight=0;
+            tmpweight = mRandom->Uniform(1.e-13);
+            controltmp++;
+            if(controltmp>1e6) break;
+         }
+         while(weight==0 || (tmpweight>weight ));
+         if (controltmp>=1e6)
+            return 99;
          // saving all the particles (their momenta)
          for(int i=0;i<Nsum;i++)
          {
