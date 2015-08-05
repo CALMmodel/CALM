@@ -12,6 +12,10 @@
 #include "Particle.h"
 #include "THGlobal.h"
 #include "TF1.h"
+//--------reggae
+#include "reggae.h"
+#include "specrel.h"
+
 //#include <fstream>
 
 using namespace std;

@@ -48,7 +48,7 @@ F_BASH      = $(DIR_MAIN)*.sh
 # file lists
 # CALM
 BIN_EVENTS  = calm_events
-HSRC_EVENTS = Parser.cxx Configurator.cxx ParticleDB.cxx ParticleType.cxx DecayTable.cxx DecayChannel.cxx EventGenerator.cxx Event.cxx Particle.cxx ParticleCoor.cxx ParticleDecayer.cxx Crc32.cxx Vector3D.cxx CALM.cxx
+HSRC_EVENTS = Parser.cxx Configurator.cxx ParticleDB.cxx ParticleType.cxx DecayTable.cxx DecayChannel.cxx EventGenerator.cxx Event.cxx Particle.cxx ParticleCoor.cxx ParticleDecayer.cxx Crc32.cxx Vector3D.cxx CALM.cxx reggae.cxx specrel.cxx
 SRC_EVENTS  = $(HSRC_EVENTS:%=$(DIR_CXX)%) $(BIN_EVENTS:%=$(DIR_CXX)%.cxx)
 OBJ_EVENTS  = $(SRC_EVENTS:$(DIR_CXX)%.cxx=$(DIR_OBJ)%.o)
 

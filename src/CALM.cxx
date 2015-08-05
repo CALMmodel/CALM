@@ -176,37 +176,79 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
       case GLOBAL:
       default:
       {
-         TLorentzVector en;
-         TGenPhaseSpace event;
-         Particle* tParticle;
-         double masses[Nsum];
-         for (int i=0;i<Nsum;i++)
-            masses[i]=aPartDB->GetParticleType(mParticlesThisEvent[i].c_str())->GetMass();
-         do
-         {
-            // generate total momentum
-            TF1* Ptot = new TF1("Ptot","4.33538e-02*TMath::Landau(x,3.24886e+00,2.17010e+00)*exp(8.34570e-03*x)",0,100);
-            TotEnergy = Ptot->GetRandom();
-            delete Ptot;
-            en.SetE(TotEnergy);
-            control++;
-         }
-         while( !(event.SetDecay(en, Nsum, masses) || control>10) );
-         if (control>10)
-         {
-            mParticlesThisEvent.clear();
-            return 99;
-         }
-         double weight;
-         TLorentzVector* tmp;
-         weight = event.Generate();
-         if(weight != weight) weight=0;
+	 //************GENBOD part*************************
+         // TLorentzVector en;
+         // TGenPhaseSpace event;
+         // Particle* tParticle;
+         // double masses[Nsum];
+         // for (int i=0;i<Nsum;i++)
+         //    masses[i]=aPartDB->GetParticleType(mParticlesThisEvent[i].c_str())->GetMass();
+
+         // do
+         // {
+         //    // generate total momentum
+         //    TF1* Ptot = new TF1("Ptot","4.33538e-02*TMath::Landau(x,3.24886e+00,2.17010e+00)*exp(8.34570e-03*x)",0,100);
+         //    TotEnergy = Ptot->GetRandom();
+         //    delete Ptot;
+         //    en.SetE(TotEnergy);
+         //    control++;
+         // }
+         // while( !(event.SetDecay(en, Nsum, masses) || control>10) );
+         // if (control>10)
+         // {
+         //    mParticlesThisEvent.clear();
+         //    return 99;
+         // }
+         // double weight;
+         // TLorentzVector* tmp;
+         // weight = event.Generate();
+         // if(weight != weight) weight=0;
+	 //*************end of GENBOD part**************************8
+
+	//*********** REGGAE part ****************
+	vector4 en;
+	long int seed = time(NULL);
+	Particle* tParticle;
+	double *masses = new double[Nsum]; //amass
+	vector4 *avec = new vector4[Nsum];
+	for (int i=0;i<Nsum;i++)
+	  masses[i]=aPartDB->GetParticleType(mParticlesThisEvent[i].c_str())->GetMass();
+	// generate total momentum
+	TF1* Ptot = new TF1("Ptot","4.33538e-02*TMath::Landau(x,3.24886e+00,2.17010e+00)*exp(8.34570e-03*x)",0,100);
+	TotEnergy = Ptot->GetRandom();
+	delete Ptot;
+	
+	en[0]=TotEnergy; //0 - energy, 1- px, 2-py, 3-px
+	en[1]=0;en[2]=0;en[3]=0;
+
+	int count=0;
+
+	int checkE = 1;
+	  TLorentzVector* tmp;
+	  double weight=1;
+	do{
+	  Mconserv (en,Nsum,masses,avec,&seed); //genbod algoritmus
+
+	  collision(Nsum,avec,&seed);	//collision algoritmus
+	  checkE = 1;
+
+	  //*****************************************
+	  //check particles
+	  
+	  for(int i=0;i<Nsum;i++)
+	    if(avec[i][0]<=0) checkE = false;
+	  if(count>10) cout<<"Count > 100!!!"<<endl;
+	}while(!checkE);
+	//*********************************
          // saving all the particles (their momenta)
          for(int i=0;i<Nsum;i++)
          {
-            tmp = event.GetDecay(i);
-            tParticle = new Particle(aPartDB->GetParticleType(mParticlesThisEvent[i].c_str()));
-            tParticle->SetParticlePX(tmp->E() ,tmp->Px(),tmp->Py(), tmp->Pz(),
+	   //tmp = event.GetDecay(i); //GENBOD
+	   //if(avec[i][0]!=0){ cout<<"negative energy "<<avec[i][0]<<" "<<avec[i][1]<<" "<<avec[i][2]<<" "<<avec[i][3]<<" reggae mass:" <<sqrt(avec[i]*avec[i])<<" for particle "<<i<<"("<<masses[i]<<","<<mParticlesThisEvent[i].c_str()<<")"<<endl;   }
+
+	   tmp->SetPxPyPzE(avec[i][1],avec[i][2],avec[i][3],avec[i][0]);
+	   tParticle = new Particle(aPartDB->GetParticleType(mParticlesThisEvent[i].c_str()));
+	   tParticle->SetParticlePX(tmp->E() ,tmp->Px(),tmp->Py(), tmp->Pz(),
                                      0,XYZrand[i][0],XYZrand[i][1],XYZrand[i][2],
                                      weight, 0);
             aParticles->push_back(*tParticle);
