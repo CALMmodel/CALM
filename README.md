@@ -19,4 +19,4 @@ Installation
    
    If cmake fails to find ROOT package, you can specify its path via:
    
-      cmake -DROOTSYS='your_path_to_root_installation_e_g_/opt/root'
+      cmake -DROOTSYS='your_path_to_root_installation_e_g_/opt/root' ..
