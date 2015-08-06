@@ -291,6 +291,7 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
             }
             tmpweight0 = mRandom->Uniform(3.e-7);
             tmpweight1 = mRandom->Uniform(3.e-7);
+            controltmp++;
             if(controltmp>1e6) break;
          }
          while(weight0==0 || weight1==0 || (tmpweight0>weight0 ) || (tmpweight1>weight1 ));
@@ -381,6 +382,7 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
             }
             tmpweight0 = mRandom->Uniform(3.e-7);
             tmpweight1 = mRandom->Uniform(3.e-7);
+            controltmp++;
             if(controltmp>1e6) break;
          }
          while(weight0==0 || weight1==0 || (tmpweight0>weight0 ) || (tmpweight1>weight1 ));
