@@ -278,7 +278,7 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
             mParticlesThisEvent.clear();
             return 99;
          }
-         double tmpweight0,tmpweight1;
+         double tmpweight;
          int controltmp=0;
          do
          {
@@ -289,12 +289,11 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
                weight1=0;
                weight0=0;
             }
-            tmpweight0 = mRandom->Uniform(3.e-7);
-            tmpweight1 = mRandom->Uniform(3.e-7);
+            tmpweight = mRandom->Uniform(1.e-13);
             controltmp++;
             if(controltmp>1e6) break;
          }
-         while(weight0==0 || weight1==0 || (tmpweight0>weight0 ) || (tmpweight1>weight1 ));
+         while(weight0==0 || weight1==0 || (tmpweight>weight0*weight1) );
          if (controltmp>=1e6)
             return 99;
          // generate boost momentum
@@ -316,7 +315,7 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
             tParticle = new Particle(aPartDB->GetParticleType( names[0][i] ));
             tParticle->SetParticlePX(tmp->E()+Ejet1 ,tmp->Px()+p1[0],tmp->Py()+p1[1], tmp->Pz()+p1[2],
                                      0,XYZrand[i][0],XYZrand[i][1],XYZrand[i][2],
-                                     sqrt(weight0*weight1), 0);
+                                     weight0*weight1, 0);
             aParticles->push_back(*tParticle);
             delete tParticle;
          }
@@ -326,7 +325,7 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
             tParticle = new Particle(aPartDB->GetParticleType( names[1][i] ));
             tParticle->SetParticlePX(tmp->E()+Ejet2 ,tmp->Px()-p2[0],tmp->Py()-p2[1], tmp->Pz()-p2[2],
                                      0,XYZrand[masses[0].size()+i][0],XYZrand[masses[0].size()+i][1],XYZrand[masses[0].size()+i][2],
-                                     sqrt(weight0*weight1), 0);
+                                     weight0*weight1, 0);
             aParticles->push_back(*tParticle);
             delete tParticle;
          }
@@ -369,7 +368,7 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
             mParticlesThisEvent.clear();
             return 99;
          }
-         double tmpweight0,tmpweight1;
+         double tmpweight;
          int controltmp=0;
          do
          {
@@ -380,12 +379,11 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
                weight1=0;
                weight0=0;
             }
-            tmpweight0 = mRandom->Uniform(3.e-7);
-            tmpweight1 = mRandom->Uniform(3.e-7);
+            tmpweight = mRandom->Uniform(1.e-13);
             controltmp++;
             if(controltmp>1e6) break;
          }
-         while(weight0==0 || weight1==0 || (tmpweight0>weight0 ) || (tmpweight1>weight1 ));
+         while(weight0==0 || weight1==0 || (tmpweight>weight0*weight1) );
          if (controltmp>=1e6)
             return 99;
          // generate boost momentum
@@ -407,7 +405,7 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
             tParticle = new Particle(aPartDB->GetParticleType( names0[i] ));
             tParticle->SetParticlePX(tmp->E()+Ejet1 ,tmp->Px()+p1[0],tmp->Py()+p1[1], tmp->Pz()+p1[2],
                                      0,XYZrand[i][0],XYZrand[i][1],XYZrand[i][2],
-                                     sqrt(weight0*weight1), 0);
+                                     weight0*weight1, 0);
             aParticles->push_back(*tParticle);
             delete tParticle;
          }
@@ -417,7 +415,7 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
             tParticle = new Particle(aPartDB->GetParticleType( names1[i] ));
             tParticle->SetParticlePX(tmp->E()+Ejet2 ,tmp->Px()-p2[0],tmp->Py()-p2[1], tmp->Pz()-p2[2],
                                      0,XYZrand[Nsum1+i][0],XYZrand[Nsum1+i][1],XYZrand[Nsum1+i][2],
-                                     sqrt(weight0*weight1), 0);
+                                     weight0*weight1, 0);
             aParticles->push_back(*tParticle);
             delete tParticle;
          }
