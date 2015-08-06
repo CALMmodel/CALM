@@ -30,8 +30,6 @@
   #define _TH2_PARTICLE_TYPE_H_
 
 #include <TString.h>
-#include "DecayChannel.h"
-#include "DecayTable.h"
 
 class ParticleType {
   public:
@@ -59,8 +57,6 @@ class ParticleType {
     int    GetPDGCode()		const;
     double GetMaxIntegrand()	const;
     double GetMultiplicity()	const;
-    int    GetDecayChannelCount2() const;
-    int    GetDecayChannelCount3() const;
     
     void  SetNumber(int aNumber);
     void  SetName(const char *aName);
@@ -81,11 +77,6 @@ class ParticleType {
     void  SetPDGCode(int aCode);
     void  SetMaxIntegrand(double aMaxInt);
     void  SetMultiplicity(double aMulti);
-    void  SetDecayChannelCount2(int aDCCount2);
-    void  SetDecayChannelCount3(int aDCCount3);
-
-    DecayTable* GetTable() const;
-    void        AddDecayChannel(DecayChannel aChannel);
 
   private:
     int		mNumber;	// particle type number
@@ -107,9 +98,6 @@ class ParticleType {
     int		mPDGCode; 
     double	mMaxIntegrand;	// maximal value of the integrand
     double	mMultiplicity;	// average multiplicity
-    int		mDecayChannelCount2;      //number of channels in this case
-    int		mDecayChannelCount3;      //number of channels in this case
-    DecayTable*	mTable;
 };
 
 #endif

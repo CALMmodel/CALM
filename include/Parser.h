@@ -42,7 +42,6 @@ class Parser {
 
     void   ReadINI(Configurator* aINI);
     void   ReadSHAREParticles(ParticleDB* aDB);
-    void   ReadSHAREDecays(ParticleDB* aDB);
     
   private:
     double SHAREDeltaJ(double aJot1, double aJot2, double aJot);

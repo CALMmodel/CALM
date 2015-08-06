@@ -147,10 +147,7 @@ void ReadSHARE(ParticleDB* aPartDB)
   tParser = new Parser((tShareDir + "particles.data").Data());
   tParser->ReadSHAREParticles(aPartDB);
   delete tParser;
-  
-  tParser = new Parser((tShareDir + "decays.data").Data());
-  tParser->ReadSHAREDecays(aPartDB);
-  delete tParser;
+
 }
 
 void MessageIntro()
@@ -171,7 +168,6 @@ void MessageHelp()
   PRINT_MESSAGE("calm2_events [OPTION]");
   PRINT_MESSAGE("  [EVENTS_INI]\t\tmain settings file;\t\tdefault: events.ini");
   PRINT_MESSAGE("  [PPID]\t\tparent's system process ID;\tdefault: 0");
-  PRINT_MESSAGE("  [HYPER_XML]\tlocation of the hypersurface XML file;\tdefault:");
   PRINT_MESSAGE("  [OPTION]");
   PRINT_MESSAGE("    -h | --help\t\tthis screen");
   PRINT_MESSAGE("    -v | --version\tversion information");
@@ -184,15 +180,6 @@ void MessageVersion()
   std::cout <<  "  preprocessor: ";
 #ifdef _DEBUG_LEVEL_
   std::cout << "DEBUG="<<_DEBUG_LEVEL_<<" ";
-#endif
-#ifdef _PARTICLE_DECAYER_RESCALE_CHANNELS_
-  std::cout << "RESCALE_CHANNELS="<<_PARTICLE_DECAYER_RESCALE_CHANNELS_<<" ";
-#endif
-#ifdef _PARTICLE_DECAYER_DISABLE_THREE_BODY_DECAYS_
-  std::cout << "DISABLE_THREE_BODY_DECAYS="<<_PARTICLE_DECAYER_DISABLE_THREE_BODY_DECAYS_<<" ";
-#endif
-#ifdef _PARTICLE_DECAYER_DISABLE_TWO_BODY_DECAYS_
-  std::cout << "DISABLE_TWO_BODY_DECAYS="<<_PARTICLE_DECAYER_DISABLE_TWO_BODY_DECAYS_<<" ";
 #endif
   std::cout << std::endl;
 }

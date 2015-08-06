@@ -34,11 +34,8 @@ ParticleType::ParticleType()
   mBarionN(-1), mI(-1.0), mI3(-1.0), mStrangeN(-1), mCharmN(-1),
   mNq(-1), mNaq(-1), mNs(-1), mNas(-1), mNc(-1), mNac(-1),
   mPDGCode(0),
-  mMaxIntegrand(0.0), mMultiplicity(0.0),
-  mDecayChannelCount2(0), mDecayChannelCount3(0)
-{
-  mTable	= new DecayTable();
-}
+  mMaxIntegrand(0.0), mMultiplicity(0.0)
+{}
 
 ParticleType::ParticleType(const ParticleType& aParticleType)
 {
@@ -61,16 +58,10 @@ ParticleType::ParticleType(const ParticleType& aParticleType)
   mPDGCode	= aParticleType.GetPDGCode();
   mMaxIntegrand	= aParticleType.GetMaxIntegrand();
   mMultiplicity = aParticleType.GetMultiplicity();
-  mDecayChannelCount2 = aParticleType.GetDecayChannelCount2();
-  mDecayChannelCount3 = aParticleType.GetDecayChannelCount3();
-  mTable	= new DecayTable(*(aParticleType.GetTable()));
 }
 
 ParticleType::~ParticleType()
-{
-  if (mTable)
-    delete mTable;
-}
+{}
 
 int	ParticleType::GetNumber() const		{ return mNumber; }
 const char*	ParticleType::GetName() const	{ return mName.Data(); }
@@ -91,8 +82,6 @@ int	ParticleType::GetStrangeN() const	{ return mStrangeN; }
 int	ParticleType::GetCharmN() const		{ return mCharmN; }
 double	ParticleType::GetMaxIntegrand() const	{ return mMaxIntegrand; }
 double	ParticleType::GetMultiplicity() const	{ return mMultiplicity; }
-int	ParticleType::GetDecayChannelCount2() const { return mDecayChannelCount2; }
-int	ParticleType::GetDecayChannelCount3() const { return mDecayChannelCount3; }
 int	ParticleType::GetCharge() const		{ return static_cast<int> (mI3+(mBarionN+mStrangeN)/2.); }
 
 void	ParticleType::SetNumber(int aNumber)		{ mNumber = aNumber; }
@@ -114,20 +103,3 @@ void	ParticleType::SetNumberAC( int aNac)		{ mNac = aNac; }
 void	ParticleType::SetPDGCode(int aCode)		{ mPDGCode = aCode; }
 void	ParticleType::SetMaxIntegrand(double aMaxInt)	{ mMaxIntegrand = aMaxInt; }
 void	ParticleType::SetMultiplicity(double aMulti)	{ mMultiplicity = aMulti; }
-void	ParticleType::SetDecayChannelCount2(int aDCCount2) { mDecayChannelCount2 = aDCCount2; }
-void	ParticleType::SetDecayChannelCount3(int aDCCount3) { mDecayChannelCount3 = aDCCount3; }
-
-DecayTable* ParticleType::GetTable() const
-{
-  if (mTable)
-    return mTable;
-  else
-    return 0;
-}
-
-void ParticleType::AddDecayChannel(DecayChannel aChannel)
-{
-  if (!mTable)
-    mTable = new DecayTable();
-  mTable->AddDecayChannel(aChannel);
-}

@@ -30,7 +30,6 @@
 #include <TDatime.h>
 #include "Crc32.h"
 #include "Configurator.h"
-#include "ParticleDecayer.h"
 #include "Event.h"
 #include "THGlobal.h"
 
@@ -114,31 +113,6 @@ void Event::GeneratePrimordials(int aSeed)
 	  }
 	while( control == 99 );
 		
-}
-
-void Event::DecayParticles(int aSeed)
-{
-	list<Particle>::iterator tIter;
-	ParticleType*		tFatherType;
-	ParticleDecayer* tDecayer;
-	
-	tDecayer = new ParticleDecayer(mPartDB, &mParticles);
-
-	if (sRandomize)
-		tDecayer->Randomize();
-	else
-		tDecayer->SeedSet(aSeed);
-	
-	tIter = mParticles.begin();
-// as new particles are added from decays the end() of the list moves until all particles had decayed
-	do {
-		tFatherType = tIter->GetParticleType();
-		// if not stable or stable but has a decay table with at least one decay channel
-		if((tFatherType->GetGamma() >= 0.0) && (tFatherType->GetTable()) && (tFatherType->GetTable()->GetChannelCount() + 1 > 0))
-			tDecayer->DecayParticle( &(*tIter) );
-		tIter++;
-	} while (tIter != mParticles.end());
-	delete tDecayer;
 }
 
 void Event::GenerateMultiplicities()

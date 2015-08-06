@@ -51,7 +51,6 @@ class Event {
 		unsigned int	 GetEventID() const;
 
 		void		 GeneratePrimordials(int aSeed=0);
-		void		 DecayParticles(int aSeed=0);
 		void		 Randomize();
 		
 	private:
