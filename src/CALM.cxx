@@ -278,13 +278,24 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
             mParticlesThisEvent.clear();
             return 99;
          }
-         weight0 = event0.Generate();
-         weight1 = event1.Generate();
-         if( (weight0 != weight0) || (weight1 != weight1) )
+         double tmpweight0,tmpweight1;
+         int controltmp=0;
+         do
          {
-            weight1=0;
-            weight0=0;
+            weight0 = event0.Generate();
+            weight1 = event1.Generate();
+            if( (weight0 != weight0) || (weight1 != weight1) )
+            {
+               weight1=0;
+               weight0=0;
+            }
+            tmpweight0 = mRandom->Uniform(3.e-7);
+            tmpweight1 = mRandom->Uniform(3.e-7);
+            if(controltmp>1e6) break;
          }
+         while(weight0==0 || weight1==0 || (tmpweight0>weight0 ) || (tmpweight1>weight1 ));
+         if (controltmp>=1e6)
+            return 99;
          // generate boost momentum
          double phi, eta, theta, p1[3], p2[3], Ejet1, Ejet2;
          phi = mRandom->Uniform(0,2*TMath::Pi());
@@ -357,13 +368,24 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
             mParticlesThisEvent.clear();
             return 99;
          }
-         weight0 = event0.Generate();
-         weight1 = event1.Generate();
-         if( (weight0 != weight0) || (weight1 != weight1) )
+         double tmpweight0,tmpweight1;
+         int controltmp=0;
+         do
          {
-            weight1=0;
-            weight0=0;
+            weight0 = event0.Generate();
+            weight1 = event1.Generate();
+            if( (weight0 != weight0) || (weight1 != weight1) )
+            {
+               weight1=0;
+               weight0=0;
+            }
+            tmpweight0 = mRandom->Uniform(3.e-7);
+            tmpweight1 = mRandom->Uniform(3.e-7);
+            if(controltmp>1e6) break;
          }
+         while(weight0==0 || weight1==0 || (tmpweight0>weight0 ) || (tmpweight1>weight1 ));
+         if (controltmp>=1e6)
+            return 99;
          // generate boost momentum
          double phi, eta, theta, p1[3], p2[3], Ejet1, Ejet2;
          phi = mRandom->Uniform(0,2*TMath::Pi());
