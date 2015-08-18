@@ -4,7 +4,7 @@
 // divided by 2
 int RG_opak = 4;
 
-
+using namespace std;
 /* the random generator routine */
 
 double KAS_rndm(long *idum)
@@ -117,125 +117,132 @@ void quicksort(int n, double a[])
 }
 
 double Mconserv (vector4 P, int n,double *mass, vector4 *op, long int *seed){
-double *arrnd = (double*)malloc(n * sizeof (double));
-double *aimass = (double*)malloc(n * sizeof (double));
-int i,l,j;
-double M,ps,w,sum1;
-double rnd,theta;
-double oarg;
+  double *arrnd = (double*)malloc(n * sizeof (double));
+  double *aimass = (double*)malloc(n * sizeof (double));
+  int i,l,j;
+  double M,ps,w,sum1;
+  double rnd,theta;
+  double oarg;
 
-vector4 pa,Q,pdec,sku;
-vector4 bv;
-tensor4 bm;
-
-
-for (i=0;i<(n-2);i++){
-		arrnd[i]=KAS_rndm(seed);
-	}
-quicksort(n-2,arrnd);
-M=sqrt(P*P);	//invariant mass
-sum1 = M - sum(0,n,mass);
-for (int i=1;i<n-1;i++){
-	aimass[i] = (arrnd[i-1]*(sum1)) + sum(0,i,mass);
-	}
-	aimass[n-1]=M;
-	aimass[0]=mass[0];
+  vector4 pa,Q,pdec,sku;
+  vector4 bv;
+  tensor4 bm;
 
 
-pdec=P;
-j=n-1;
-while (j>0) {
+  for (i=0;i<(n-2);i++){
+    arrnd[i]=KAS_rndm(seed);
+  }
+  quicksort(n-2,arrnd);
+  M=sqrt(P*P);	//invariant mass
+  sum1 = M - sum(0,n,mass);
+  for (int i=1;i<n-1;i++){
+    aimass[i] = (arrnd[i-1]*(sum1)) + sum(0,i,mass);
+  }
+  aimass[n-1]=M;
+  aimass[0]=mass[0];
 
-	oarg = (aimass[j]*aimass[j] - (aimass[j-1]*aimass[j-1] + mass[j]*mass[j]))
-	* (aimass[j]*aimass[j] - (aimass[j-1]*aimass[j-1] + mass[j]*mass[j]))
-	- 4.*mass[j]*mass[j]*aimass[j-1]*aimass[j-1];
+
+  pdec=P;
+  j=n-1;
+  while (j>0) {
+
+    oarg = (aimass[j]*aimass[j] - (aimass[j-1]*aimass[j-1] + mass[j]*mass[j]))
+      * (aimass[j]*aimass[j] - (aimass[j-1]*aimass[j-1] + mass[j]*mass[j]))
+      - 4.*mass[j]*mass[j]*aimass[j-1]*aimass[j-1];
 	
-	if (-1.e-6<oarg && oarg<0.) oarg = 0.;
+    if (-1.e-6<oarg && oarg<0.) oarg = 0.;
 	
-	ps= sqrt(oarg)
-	/ (2.*aimass[j]); 
+    ps= sqrt(oarg)
+      / (2.*aimass[j]); 
 	
-// generate angles
-	rnd = 2.*DGPI*KAS_rndm(seed);
-	theta = acos(1.-2.*KAS_rndm(seed));
+    // generate angles
+    rnd = 2.*DGPI*KAS_rndm(seed);
+    theta = acos(1.-2.*KAS_rndm(seed));
 
-// calculate momenta
-      pa[1] = ps * sin(theta) * cos(rnd);
-      pa[2] = ps * sin(theta) * sin(rnd);
-      pa[3] = ps * cos(theta);
-      pa[0] = sqrt(mass[j]*mass[j] 
-			       + ps*ps);
+    // calculate momenta
+    pa[1] = ps * sin(theta) * cos(rnd);
+    pa[2] = ps * sin(theta) * sin(rnd);
+    pa[3] = ps * cos(theta);
+    pa[0] = sqrt(mass[j]*mass[j] 
+		 + ps*ps);
 
-	Q[1] = -pa[1];
-	Q[2] = -pa[2];
-	Q[3] = -pa[3];
-	Q[0] = sqrt(aimass[j-1]*aimass[j-1] 
-			       + ps*ps);
+    Q[1] = -pa[1];
+    Q[2] = -pa[2];
+    Q[3] = -pa[3];
+    Q[0] = sqrt(aimass[j-1]*aimass[j-1] 
+		+ ps*ps);
 
-//now moment must be boosted
-//get boost-velocity
-	bv=pdec/aimass[j];
-//calculate boost-tensor
-	bm=BoostMatrix(bv);
+    //now moment must be boosted
+    //get boost-velocity
+    bv=pdec/aimass[j];
+
+    //calculate boost-tensor
+
+    if ( (fabs((bv*bv)-1.))>1.e-6 ) {
+      cout<<" ||| j: "<<j<<" || 0: "<<pdec[0]<<" 1:"<<pdec[1]<<" 2:"<<pdec[2]<<" 3:"<<pdec[3]<<" aimass: "<<aimass[j]<<endl;
+      cout<<"+++++++++++++"<<endl;
+      for(int aaa=0;aaa<n;aaa++) cout<<"amass["<<aaa<<"] = "<<mass[aaa]<<"; "<<endl;
+    }
+    bm=BoostMatrix(bv);
 
 
-//boost the momenta
-	pa=boost(pa,bm);
-		op[j]=pa;
-	Q=boost(Q,bm);
-		pdec=Q;
+    //boost the momenta
+    pa=boost(pa,bm);
+    op[j]=pa;
+    Q=boost(Q,bm);
+    pdec=Q;
 
-j--;
+    j--;
 
  
-}
-op[0]=Q;
+  }
+  op[0]=Q;
 
-w=1.;
-w = (pow(SRPI,n-1))/(2*M);
-for (int l=1;l<n;l++){
-w *= sqrt(aimass[l]*aimass[l] 
-		+ pow((aimass[l-1]*aimass[l-1] - mass[l]*mass[l])/aimass[l],2)
-		-2*(aimass[l-1]*aimass[l-1] + mass[l]*mass[l]));
+  w=1.;
+  w = (pow(SRPI,n-1))/(2*M);
+  for (int l=1;l<n;l++){
+    w *= sqrt(aimass[l]*aimass[l] 
+	      + pow((aimass[l-1]*aimass[l-1] - mass[l]*mass[l])/aimass[l],2)
+	      -2*(aimass[l-1]*aimass[l-1] + mass[l]*mass[l]));
 		
-}
-free(arrnd);
-free(aimass);
-return w;
+  }
+  free(arrnd);
+  free(aimass);
+  return w;
 }
 
 double collision (int n,vector4 *avec, long int *seed)
 {
-int j;
-double rnd,theta;
-double psp1,psp2,sqs,r,r2;
-vector4 p1,p2,ptot,vboost,p1star,p2star;
-tensor4 lambda;
-double m12, m22;
-double scms;
-for (int c=0;c<RG_opak;c++){
-	int ran = static_cast<int>(n*KAS_rndm(seed));
-	while (ran == 0 ) {
-	ran = static_cast<int>(n*KAS_rndm(seed));}
-	//cout << "posun je " << ran << "\n"; 
-		for (int i=0;i<n;i++){
-		j=i+ran;
-		if (j>n-1) j=j-n;
-		// cout << i <<" " << j << "\n";
+  int j;
+  double rnd,theta;
+  double psp1,psp2,sqs,r,r2;
+  vector4 p1,p2,ptot,vboost,p1star,p2star;
+  tensor4 lambda;
+  double m12, m22;
+  double scms;
+  for (int c=0;c<RG_opak;c++){
+    int ran = static_cast<int>(n*KAS_rndm(seed));
+    while (ran == 0 ) {
+      ran = static_cast<int>(n*KAS_rndm(seed));}
+    //cout << "posun je " << ran << "\n"; 
+    for (int i=0;i<n;i++){
+      j=i+ran;
+      if (j>n-1) j=j-n;
+      // cout << i <<" " << j << "\n";
 			
-			//tu zacina zrazka
-			p1=avec[i];
-			p2=avec[j];
-			m12 = p1*p1;
-			m22 = p2*p2;
-			ptot=p1+p2;
-			scms = ptot*ptot;
-			// collide if s is not too small 
-			if ((scms - (m12+m22+2.*sqrt(m12*m22)))/(p1[0]+p2[0])/(p1[0]+p2[0]) > 0.0001) 
-			{
-				sqs=sqrt(scms);
-				// cout << scms << " I am here \n";
-				vboost=ptot/sqs;
+      //tu zacina zrazka
+      p1=avec[i];
+      p2=avec[j];
+      m12 = p1*p1;
+      m22 = p2*p2;
+      ptot=p1+p2;
+      scms = ptot*ptot;
+      // collide if s is not too small 
+      if ((scms - (m12+m22+2.*sqrt(m12*m22)))/(p1[0]+p2[0])/(p1[0]+p2[0]) > 0.0001) 
+	{
+	  sqs=sqrt(scms);
+	  // cout << scms << " I am here \n";
+	  vboost=ptot/sqs;
 
 				vboost[1]=-vboost[1];
 				vboost[2]=-vboost[2];

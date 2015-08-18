@@ -38,6 +38,7 @@ class CALM {
 		double* mXYZ; // to generate distance from primary vertex 
 		int* mNpartkinds; // number of particles for each kind
 		string** mNames; // names of particles to be generated
+		TF1* Ptot;
       // values for this event
       vector<string> mParticlesThisEvent; 
 };
