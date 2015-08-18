@@ -34,6 +34,8 @@ CALM::CALM(): mRandom(0), mNames(0), mNmean(0)
    mXYZ = new double[3];
    for(int i=0;i<3;i++)
       mXYZ[i] = XYZ[i];
+
+  Ptot = new TF1("Ptot","4.33538e-02*TMath::Landau(x,3.24886e+00,2.17010e+00)*exp(8.34570e-03*x)",0,30);
 }
 CALM::~CALM()
 {
@@ -185,9 +187,9 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
          do
          {
             // generate total momentum
-            TF1* Ptot = new TF1("Ptot","4.33538e-02*TMath::Landau(x,3.24886e+00,2.17010e+00)*exp(8.34570e-03*x)",0,100);
+            //TF1* Ptot = new TF1("Ptot","4.33538e-02*TMath::Landau(x,3.24886e+00,2.17010e+00)*exp(8.34570e-03*x)",0,100);
             TotEnergy = Ptot->GetRandom();
-            delete Ptot;
+            //delete Ptot;
             en.SetE(TotEnergy);
             control++;
          }
@@ -266,9 +268,9 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
          do
          {
             // generate total momentum
-            TF1* Ptot = new TF1("Ptot","4.33538e-02*TMath::Landau(x,3.24886e+00,2.17010e+00)*exp(8.34570e-03*x)",0,100);
+            //TF1* Ptot = new TF1("Ptot","4.33538e-02*TMath::Landau(x,3.24886e+00,2.17010e+00)*exp(8.34570e-03*x)",0,100);
             TotEnergy = Ptot->GetRandom();
-            delete Ptot;
+            //delete Ptot;
             en.SetE(TotEnergy/4.);
             control++;
          }
@@ -356,9 +358,9 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
          do
          {
             // generate total momentum
-            TF1* Ptot = new TF1("Ptot","4.33538e-02*TMath::Landau(x,3.24886e+00,2.17010e+00)*exp(8.34570e-03*x)",0,100);
+            //TF1* Ptot = new TF1("Ptot","4.33538e-02*TMath::Landau(x,3.24886e+00,2.17010e+00)*exp(8.34570e-03*x)",0,100);
             TotEnergy = Ptot->GetRandom();
-            delete Ptot;
+            //delete Ptot;
             en.SetE(TotEnergy/4.);
             control++;
          }
@@ -421,6 +423,74 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
          }
          break;
       }
+      case GLOBAL_REGGAE:
+	{
+	  //*********** REGGAE part ****************
+	  //*** good, but check negative energy
+	
+	  vector4 en;
+	  long int seed = time(NULL);
+	  double *masses = new double[Nsum]; //amass
+	  vector4 *avec = new vector4[Nsum];
+	  double totalMass = 0;
+	  for (int i=0;i<Nsum;i++){
+	    masses[i]=aPartDB->GetParticleType(mParticlesThisEvent[i].c_str())->GetMass();
+	    totalMass += masses[i];
+	  }
+
+	  // get total momentum
+	  TotEnergy = Ptot->GetRandom(totalMass+1,totalMass+100); //include mass of the particles in the range
+ 
+	  //set starting values to distribute
+	  en[0]=TotEnergy; en[1]=0.0;en[2]=0.0;en[3]=0.0; //0 - energy, 1- px, 2-py, 3-px
+
+	  int checkE = 1;
+
+	  do{
+	    Mconserv (en,Nsum,masses,avec,&seed); //genbod algoritmus
+	    collision(Nsum,avec,&seed);	//collision algoritmus
+	    checkE = 1;
+
+	    //*****************************************
+	    //check particles for negative energy: in such case re-generate the event
+	  
+	    for(int i=0;i<Nsum;i++){
+	      if(avec[i][0]<=0) {
+		checkE = false; 
+		cout<<"Negative energy!"<<endl;	      
+	      }
+	      //  if(!checkE) {
+	      // //   cout<<"negative energy "<<avec[i][0]<<" "<<avec[i][1]<<" "<<avec[i][2]<<" "<<avec[i][3]<<" reggae mass:" <<sqrt(avec[i]*avec[i])<<" for particle "<<i<<"("<<masses[i]<<","<<mParticlesThisEvent[i].c_str()<<")"<<endl;
+	      //    for(int aaa=0;aaa<Nsum;aaa++) cout<<"amass["<<aaa<<"] = "<<masses[aaa]<<"; ||| "<<TotEnergy<<" ||| "<<sqrt(avec[aaa]*avec[aaa])<<endl;
+	      //  } 
+	    }
+	  }while(!checkE);
+
+	  //*********************************
+	  // saving all the particles (their momenta)
+	
+	  Particle* tParticle;
+	  TLorentzVector* tmp =new TLorentzVector();
+	  double weight=1;
+
+	  for(int i=0;i<Nsum;i++)
+	    {
+	      tmp->SetPxPyPzE(avec[i][1],avec[i][2],avec[i][3],avec[i][0]); //sat values from Reggae
+	 
+	      tParticle = new Particle(aPartDB->GetParticleType(mParticlesThisEvent[i].c_str()));
+	      tParticle->SetParticlePX(tmp->E() ,tmp->Px(),tmp->Py(), tmp->Pz(),
+				       0,XYZrand[i][0],XYZrand[i][1],XYZrand[i][2],
+				       weight, 0);
+	      aParticles->push_back(*tParticle);
+	      PRINT_DEBUG_2(mParticlesThisEvent[i]<<" , "<<endl);
+	      delete tParticle;
+	   
+	    }
+	  delete [] masses;
+	  delete [] avec;
+	  break;
+	
+	}
       }
    mParticlesThisEvent.clear();
    return 0;

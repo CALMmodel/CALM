@@ -13,10 +13,13 @@
 #include "THGlobal.h"
 #include "TF1.h"
 //#include <fstream>
+//--------reggae
+#include "reggae.h"
+#include "specrel.h"
 
 using namespace std;
 
-enum eEventType {GLOBAL, MINIJETS_GLOBAL, MINIJETS_LOCAL};
+enum eEventType {GLOBAL, MINIJETS_GLOBAL, MINIJETS_LOCAL,GLOBAL_REGGAE};
 
 class CALM {
 	public:
@@ -34,6 +37,7 @@ class CALM {
 		double* mXYZ; // to generate distance from primary vertex 
 		int* mNpartkinds; // number of particles for each kind
 		string** mNames; // names of particles to be generated
+		TF1* Ptot; //Total momentum to be distributed among particles
       // values for this event
       vector<string> mParticlesThisEvent; 
 };
