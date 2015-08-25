@@ -28,6 +28,7 @@ class CALM {
 		int   GenerateParticles(ParticleDB* aPartDB,int aMultBinMin, int aMultBinMax, std::list<Particle>* aParticles, eEventType aEventType = GLOBAL);
 		void   Randomize();
 	private:
+      void ReadParameters();
 		TRandom2* mRandom;
       // values constant (what can be generated etc)
 		int		 mNpart; // number of kinds of particles (pions, kaons, nuclides etc.)
@@ -38,7 +39,10 @@ class CALM {
 		string** mNames; // names of particles to be generated
 		TF1* Ptot; //Total momentum to be distributed among particles
       // values for this event
-      vector<string> mParticlesThisEvent; 
+      vector<string> mParticlesThisEvent;
+      int mMultMin;  //min multiplicity for CALM
+      int mMultMax;  //max multiplicity for CALM
+      eEventType mEventType;
 };
 
 #endif

@@ -41,7 +41,6 @@ extern TString	sMainINI;
 extern TString	sEventDIR;
 extern TString	sTimeStamp;
 extern int	sRandomize;
-extern int	sIntegrateSample;
 extern int	sParentPID;
 
 using namespace std;
@@ -160,16 +159,15 @@ void EventGenerator::SaveAsRoot()
     char tTimeStamp[21];
     sprintf(tTimeStamp,"%s",sTimeStamp.Data());
     mParticleTree ->Branch(_PARTICLE_BRANCH_,		&tPartCoor,							 _PARTICLE_FORMAT_	);
-    mEventTree    ->Branch(_EVENTS_BRANCH_,		&tStructEvent,							 _EVENTS_FORMAT_	);   
-    /*mParameterTree->Branch(_INTEGRATESAMPLE_BRANCH_,	(UInt_t*) &sIntegrateSample,					 "i"			);
+    mEventTree    ->Branch(_EVENTS_BRANCH_,		&tStructEvent,							 _EVENTS_FORMAT_	);/*
     mParameterTree->Branch(_RANDOMIZE_BRANCH_,		(UInt_t*) &sRandomize,						 "i"			);
     mParameterTree->Branch(_TIMESTAMP_BRANCH_,		(Char_t*) tTimeStamp,						 _TIMESTAMP_FORMAT_	);
     mParameterTree->Branch(_MODELID_BRANCH_,		(UInt_t*) &sModel,						 "i"			);
     mParameterTree->Branch(_MODELNAME_BRANCH_,		(Char_t*) mEvent->GetIntegrator()->GetModel()->GetName(),	 _MODELNAME_FORMAT_	);
     mParameterTree->Branch(_MODELHASH_BRANCH_,		(Char_t*) mEvent->GetIntegrator()->GetModel()->GetHash(),	 _MODELHASH_FORMAT_	);
-    mParameterTree->Branch(_MODELDESCRIPTION_BRANCH_,	(Char_t*) mEvent->GetIntegrator()->GetModel()->GetDescription(), _MODELDESCRIPTION_FORMAT_);    
+    mParameterTree->Branch(_MODELDESCRIPTION_BRANCH_,	(Char_t*) mEvent->GetIntegrator()->GetModel()->GetDescription(), _MODELDESCRIPTION_FORMAT_);
     mEvent        ->GetIntegrator()->GetModel()->AddParameterBranch(mParameterTree);
-    mParameterTree->Fill();    */
+    mParameterTree->Fill();*/
     PRINT_DEBUG_2("<EventGenerator::SaveAsRoot>\tCreated file "<<tTempFName);
   }
 // add all Particle entries to file and Event information
@@ -262,14 +260,13 @@ void EventGenerator::ReadParameters()
   TString  tExportType; 
   try {
     mNumberOfEvents	= (sMainConfig->GetParameter("NumberOfEvents")).Atoi();
-    sIntegrateSample	= (sMainConfig->GetParameter("IntegrateSamples")).Atoi();
     sEventDIR	= sMainConfig->GetParameter("EventDir"); sEventDIR.Prepend("./");
     tExportType = sMainConfig->GetParameter("EventFileType");
   }
   catch (TString tError) {
     PRINT_MESSAGE("<EventGenerator::ReadParameters>\tCaught exception " << tError);
     PRINT_MESSAGE("\tDid not find one of the necessary parameters in the parameters file.");
-    exit(_ERROR_CONFIG_PARAMETER_NOT_FOUND_);
+    exit(_ERROR_CONFIG_PARAMETER_);
   }
   if (tExportType == "root")		mEventExportType = 0;
   else if (tExportType == "text")	mEventExportType = 1;

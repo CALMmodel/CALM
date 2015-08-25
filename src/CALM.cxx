@@ -1,7 +1,14 @@
 #include "CALM.h"
+#include "Configurator.h"
+#include <sstream>
+#include "THGlobal.h"
+#include "TFile.h"
+
+extern Configurator* sMainConfig;
 
 CALM::CALM(): mRandom(0), mNames(0), mNmean(0)
 {
+   ReadParameters();
    mRandom = new TRandom2(0);
    mNpart = 4; //particle types (pions, kaons, protons, lambdas)
    //double Nmean[] = {8.94, 1.1, 0.648, 0.19};
@@ -34,9 +41,74 @@ CALM::CALM(): mRandom(0), mNames(0), mNmean(0)
    mXYZ = new double[3];
    for(int i=0;i<3;i++)
       mXYZ[i] = XYZ[i];
-
-   Ptot = new TF1("Ptot","4.33538e-02*TMath::Landau(x,3.24886e+00,2.17010e+00)*exp(8.34570e-03*x)",0,30);
 }
+
+
+void CALM::ReadParameters()
+{
+   std::string tMultMin, tMultMax, tEventType, tFormula;
+   TString filename;
+   int tMultMinInt, tMultMaxInt;
+   int tEventTypeEnum;
+   std::stringstream tConvert;
+   try {
+      tMultMin	= sMainConfig->GetParameter("MultiplicityMin");
+      tMultMax	= sMainConfig->GetParameter("MultiplicityMax");
+      tEventType	= sMainConfig->GetParameter("EventType");
+      tFormula	= sMainConfig->GetParameter("MomentumDistribution");
+      filename = tFormula;
+      if(filename.EndsWith(".root"))
+      {
+         PRINT_MESSAGE("<Calm::ReadParameters>\t oki doki Ill read from ROOT file"<<tFormula);
+         TFile file(filename);
+         if(!file.IsOpen())
+         {
+            PRINT_MESSAGE("<Calm::ReadParameters>\tfile\t"<<filename<<"\t did not open correctly");
+            exit(_ERROR_CONFIG_PARAMETER_);
+         }
+         tFormula	= sMainConfig->GetParameter("formulaName");
+         Ptot = (TF1*) file.Get(tFormula.c_str());
+         file.Close();
+      }
+      else
+      {
+         PRINT_MESSAGE("<Calm::ReadParameters>\t"<<tFormula);
+         TFormula f("ptot",tFormula.c_str());
+         //Ptot = new TF1("Ptot","4.33538e-02*TMath::Landau(x,3.24886e+00,2.17010e+00)*exp(8.34570e-03*x)",0,30);
+         if( !f.Compile(tFormula.c_str()))
+         {
+            PRINT_MESSAGE("<Calm::ReadParameters>\tRight formula____");
+         }
+         else
+         {
+            PRINT_MESSAGE("<Calm::ReadParameters>\tBad formula_____");
+            exit(_ERROR_CONFIG_PARAMETER_);
+         }
+      }
+      Ptot = new TF1("Ptot",tFormula.c_str(),0,30);
+      PRINT_MESSAGE("<Calm::ReadParameters>\t"<<tFormula);
+      tConvert<<tMultMin<<' '<<tMultMax<<' '<<' '<<tEventType;
+      tConvert>>tMultMinInt>>tMultMaxInt>>tEventTypeEnum;
+      if(tMultMinInt<tMultMaxInt && !(tMultMinInt<0 || tMultMaxInt<0))
+      {
+         mMultMin = tMultMinInt;
+         mMultMax = tMultMaxInt;
+      }
+      else
+      {
+         PRINT_MESSAGE("<Calm::ReadParameters>\tError reading parameters. Wrong multiplicity setting");
+         exit(_ERROR_CONFIG_PARAMETER_);
+      }
+      mEventType = (eEventType) tEventTypeEnum;
+      PRINT_MESSAGE("<Calm::ReadParameters>\tEventType: ("<<tEventType);
+      PRINT_MESSAGE("<Calm::ReadParameters>\tSetting multiplicity range ("<<tMultMinInt<<","<<tMultMaxInt);
+   }
+   catch (TString tError) {
+      PRINT_MESSAGE("<Calm::ReadParameters>\tError reading parameters.");
+      exit(_ERROR_CONFIG_PARAMETER_);
+   }
+}
+
 CALM::~CALM()
 {
    delete mRandom;

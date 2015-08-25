@@ -42,7 +42,6 @@ TString sHyperXML;
 TString	sEventDIR;
 TString	sTimeStamp;
 int	sRandomize;
-int	sIntegrateSample;
 int	sParentPID;
 
 void ReadParameters();
@@ -127,7 +126,7 @@ void ReadParameters()
   } catch (TString tError) {
     PRINT_MESSAGE("<calm_events::ReadParameters>\tCaught exception " << tError);
     PRINT_MESSAGE("\tDid not find one of the necessary parameters in the parameters file.");
-    exit(_ERROR_CONFIG_PARAMETER_NOT_FOUND_);
+    exit(_ERROR_CONFIG_PARAMETER_);
   }
 }
 
@@ -141,7 +140,7 @@ void ReadSHARE(ParticleDB* aPartDB)
   } catch (TString tError) {
     PRINT_DEBUG_1("<Parser::ReadParameters>\tCaught exception " << tError);
     PRINT_MESSAGE("\tDid not find SHARE input file location.");
-    exit(_ERROR_CONFIG_PARAMETER_NOT_FOUND_);
+    exit(_ERROR_CONFIG_PARAMETER_);
   }
 
   tParser = new Parser((tShareDir + "particles.data").Data());
