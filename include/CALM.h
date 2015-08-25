@@ -25,8 +25,7 @@ class CALM {
 	public:
 		CALM();
 		~CALM();
-		int   GenerateParticles(ParticleDB* aPartDB,int aMultBinMin, int aMultBinMax, double aEnergy, std::list<Particle>* aParticles, eEventType aEventType = GLOBAL);
-		void   SetMultiplicities(ParticleDB* aDB,int aMultBinMin, int aMultBinMax);
+		int   GenerateParticles(ParticleDB* aPartDB,int aMultBinMin, int aMultBinMax, std::list<Particle>* aParticles, eEventType aEventType = GLOBAL);
 		void   Randomize();
 	private:
 		TRandom2* mRandom;

@@ -42,7 +42,7 @@ CALM::~CALM()
    delete mRandom;
 }
 
-int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMax, double aEnergy, list<Particle>* aParticles, eEventType aEventType)
+int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMax,  list<Particle>* aParticles, eEventType aEventType)
 {
    int Nrand[mNpart]; // number of particles generated (for each kind) - from Poisson distribution
    int Npart[mNpart][aMultBinMax]; // particle to be generated

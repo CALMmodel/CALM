@@ -39,35 +39,32 @@
 #include <string>
 
 class Event {
-	
-	public:
-		Event();
-		Event(ParticleDB* aDB, CALM* aCALM);
-		~Event();
 
-		void		 Reset(int aEventIter=0);	
-		std::list<Particle>* GetParticleList();
-		ParticleDB*		 GetParticleDB() const;
-		unsigned int	 GetEventID() const;
+   public:
+      Event();
+      Event(ParticleDB* aDB, CALM* aCALM);
+      ~Event();
 
-		void		 GeneratePrimordials(int aSeed=0);
-		void		 Randomize();
-		
-	private:
-		void ReadParameters();
-		void GenerateMultiplicities();
-		
-		std::list<Particle>	mParticles;
-		std::vector<int>	mMultiplicities;
-		unsigned int	mEventID;
-		ParticleDB*		mPartDB;
-		CALM*		mCALM;
-		TRandom2*		mRandom;
-	 	int	mDistribution;	// type of multiplicity distribution: 0 = Poissonian, 1 - NegativeBinomial
-		int mMultMin;  //min multiplicity for CALM
-		int mMultMax;  //max multiplicity for CALM
-		eEventType mEventType;
-		double mEnergy;
+      void      Reset(int aEventIter=0);
+      std::list<Particle>* GetParticleList();
+      ParticleDB*     GetParticleDB() const;
+      unsigned int    GetEventID() const;
+
+      void      GeneratePrimordials(int aSeed=0);
+      void      Randomize();
+
+   private:
+      void ReadParameters();
+
+      std::list<Particle>	mParticles;
+      std::vector<int>	mMultiplicities;
+      unsigned int	mEventID;
+      ParticleDB*		mPartDB;
+      CALM*		mCALM;
+      TRandom2*		mRandom;
+      int mMultMin;  //min multiplicity for CALM
+      int mMultMax;  //max multiplicity for CALM
+      eEventType mEventType;
 };
 
 #endif
