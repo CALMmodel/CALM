@@ -199,13 +199,14 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
          for(int j=0;j<masses[1].size();++j) masses1[j] = masses[1][j];
          TLorentzVector* tmp;
          TLorentzVector en;
+         double divideEn[] = {1,1}; // 0: energy of particles, 1: boostenergy
          do
          {
             // generate total momentum
             TF1* Ptot = new TF1("Ptot","4.33538e-02*TMath::Landau(x,3.24886e+00,2.17010e+00)*exp(8.34570e-03*x)",0,100);
             TotEnergy = Ptot->GetRandom();
             delete Ptot;
-            en.SetE(TotEnergy/4.);
+            en.SetE(TotEnergy*(divideEn[0]/(2.*(divideEn[0]+divideEn[1]))));
             control++;
          }
          while( !( ((event0.SetDecay(en, masses[0].size(), masses0)) && (event1.SetDecay(en, masses[1].size(), masses1)) ) || control >10) );
@@ -237,14 +238,14 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
          phi = mRandom->Uniform(0,2*TMath::Pi());
          eta = mRandom->Uniform(-2.,2.);
          theta = 2*TMath::ATan(TMath::Exp(-eta));
-         p1[0] = TotEnergy/4./masses[0].size() * TMath::Sin(theta) * TMath::Sin(phi) ;
-         p1[1] = TotEnergy/4./masses[0].size() * TMath::Sin(theta) * TMath::Cos(phi) ;
-         p1[2] = TotEnergy/4./masses[0].size() * TMath::Cos(theta) ;
-         Ejet1 = TotEnergy/4./masses[0].size();
-         p2[0] = TotEnergy/4./masses[1].size() * TMath::Sin(theta) * TMath::Sin(phi) ;
-         p2[1] = TotEnergy/4./masses[1].size() * TMath::Sin(theta) * TMath::Cos(phi) ;
-         p2[2] = TotEnergy/4./masses[1].size() * TMath::Cos(theta) ;
-         Ejet2 = TotEnergy/4./masses[1].size();
+         Ejet1 = TotEnergy*(divideEn[1]/(2.*(divideEn[0]+divideEn[1])))/masses[0].size();
+         p1[0] = Ejet1 * TMath::Sin(theta) * TMath::Sin(phi) ;
+         p1[1] = Ejet1 * TMath::Sin(theta) * TMath::Cos(phi) ;
+         p1[2] = Ejet1 * TMath::Cos(theta) ;
+         Ejet2 = TotEnergy*(divideEn[1]/(2.*(divideEn[0]+divideEn[1])))/masses[1].size();
+         p2[0] = Ejet2 * TMath::Sin(theta) * TMath::Sin(phi) ;
+         p2[1] = Ejet2 * TMath::Sin(theta) * TMath::Cos(phi) ;
+         p2[2] = Ejet2 * TMath::Cos(theta) ;
          for(int i=0;i<masses[0].size();i++)
          {
             tmp = event0.GetDecay(i);
@@ -340,13 +341,14 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
          for(int j=0;j<masses[1].size();++j) masses1[j] = masses[1][j];
          TLorentzVector* tmp;
          TLorentzVector en;
+         double divideEn[] = {1,1}; // 0: energy of particles, 1: boostenergy
          do
          {
             // generate total momentum
             TF1* Ptot = new TF1("Ptot","4.33538e-02*TMath::Landau(x,3.24886e+00,2.17010e+00)*exp(8.34570e-03*x)",0,100);
             TotEnergy = Ptot->GetRandom();
             delete Ptot;
-            en.SetE(TotEnergy/4.);
+            en.SetE(TotEnergy*(divideEn[0]/(2.*(divideEn[0]+divideEn[1]))));
             control++;
          }
          while( !( ((event0.SetDecay(en, masses[0].size(), masses0)) && (event1.SetDecay(en, masses[1].size(), masses1)) ) || control >10) );
@@ -378,14 +380,14 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
          phi = mRandom->Uniform(0,2*TMath::Pi());
          eta = mRandom->Uniform(-2.,2.);
          theta = 2*TMath::ATan(TMath::Exp(-eta));
+         Ejet1 = TotEnergy*(divideEn[1]/(2.*(divideEn[0]+divideEn[1])))/masses[0].size();
          p1[0] = TotEnergy/4./masses[0].size() * TMath::Sin(theta) * TMath::Sin(phi) ;
          p1[1] = TotEnergy/4./masses[0].size() * TMath::Sin(theta) * TMath::Cos(phi) ;
          p1[2] = TotEnergy/4./masses[0].size() * TMath::Cos(theta) ;
-         Ejet1 = TotEnergy/4./masses[0].size();
+         Ejet2 = TotEnergy*(divideEn[1]/(2.*(divideEn[0]+divideEn[1])))/masses[1].size();
          p2[0] = TotEnergy/4./masses[1].size() * TMath::Sin(theta) * TMath::Sin(phi) ;
          p2[1] = TotEnergy/4./masses[1].size() * TMath::Sin(theta) * TMath::Cos(phi) ;
          p2[2] = TotEnergy/4./masses[1].size() * TMath::Cos(theta) ;
-         Ejet2 = TotEnergy/4./masses[1].size();
          for(int i=0;i<masses[0].size();i++)
          {
             tmp = event0.GetDecay(i);
