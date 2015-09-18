@@ -291,43 +291,43 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
             Qjet[it_clean] = 0;
             Sjet[it_clean] = 0;
             Bjet[it_clean] = 0;
-         }
-         for(int i=0;i<Nsum;++i)
-         {
-            if (mRandom->Integer(2))
-            {
-               tParticleType = aPartDB->GetParticleType( mParticlesThisEvent[i].c_str() );
-               masses[1].push_back( tParticleType->GetMass() );
-               names[1].push_back( mParticlesThisEvent[i].c_str() );
-               if ( mParticlesThisEvent[i].find("plu")!=std::string::npos ) Qjet[1]++;
-               else if ( mParticlesThisEvent[i].find("min")!=std::string::npos || mParticlesThisEvent[i].find("plb")!=std::string::npos ) Qjet[1]--;
-               else if ( mParticlesThisEvent[i].find("zer")!=std::string::npos || mParticlesThisEvent[i].find("zrb")!=std::string::npos ) ;
-               tmpInt = tParticleType->GetNumberQ()-tParticleType->GetNumberAQ()+tParticleType->GetNumberS()-tParticleType->GetNumberAS();
-               if( tmpInt ==3 ) Bjet[1]++;
-               else if( tmpInt ==-3 ) Bjet[1]--;
-               tmpInt = tParticleType->GetNumberS()-tParticleType->GetNumberAS();
-               if( tmpInt ==1 ) Sjet[1]--; //  for quark s: S=-1
-               else if( tmpInt ==-1 ) Sjet[1]++;
-            }
-            else
-            {
-               tParticleType = aPartDB->GetParticleType( mParticlesThisEvent[i].c_str() );
-               masses[0].push_back( tParticleType->GetMass() );
-               names[0].push_back( mParticlesThisEvent[i].c_str() );
-               if ( mParticlesThisEvent[i].find("plu")!=std::string::npos ) Qjet[0]++;
-               else if ( mParticlesThisEvent[i].find("min")!=std::string::npos || mParticlesThisEvent[i].find("plb")!=std::string::npos ) Qjet[0]--;
-               else if ( mParticlesThisEvent[i].find("zer")!=std::string::npos || mParticlesThisEvent[i].find("zrb")!=std::string::npos ) ;
-               tmpInt = tParticleType->GetNumberQ()-tParticleType->GetNumberAQ()+tParticleType->GetNumberS()-tParticleType->GetNumberAS();
-               if( tmpInt ==3 ) Bjet[0]++;
-               else if( tmpInt ==-3 ) Bjet[0]--;
-               tmpInt = tParticleType->GetNumberS()-tParticleType->GetNumberAS();
-               if( tmpInt ==1 ) Sjet[0]--; //  for quark s: S=-1
-               else if( tmpInt ==-1 ) Sjet[0]++;
-            }
-         }
+         }         
+	 for(int i=0;i<Nsum;++i)
+	   {
+	     if (mRandom->Integer(2))
+	       {
+		 tParticleType = aPartDB->GetParticleType( mParticlesThisEvent[i].c_str() );
+		 masses[1].push_back( tParticleType->GetMass() );
+		 names[1].push_back( mParticlesThisEvent[i].c_str() );
+		 if ( mParticlesThisEvent[i].find("plu")!=std::string::npos ) Qjet[1]++;
+		 else if ( mParticlesThisEvent[i].find("min")!=std::string::npos || mParticlesThisEvent[i].find("plb")!=std::string::npos ) Qjet[1]--;
+		 else if ( mParticlesThisEvent[i].find("zer")!=std::string::npos || mParticlesThisEvent[i].find("zrb")!=std::string::npos ) ;
+		 tmpInt = tParticleType->GetNumberQ()-tParticleType->GetNumberAQ()+tParticleType->GetNumberS()-tParticleType->GetNumberAS();
+		 if( tmpInt ==3 ) Bjet[1]++;
+		 else if( tmpInt ==-3 ) Bjet[1]--;
+		 tmpInt = tParticleType->GetNumberS()-tParticleType->GetNumberAS();
+		 if( tmpInt ==1 ) Sjet[1]--; //  for quark s: S=-1
+		 else if( tmpInt ==-1 ) Sjet[1]++;
+	       }
+	     else
+	       {
+		 tParticleType = aPartDB->GetParticleType( mParticlesThisEvent[i].c_str() );
+		 masses[0].push_back( tParticleType->GetMass() );
+		 names[0].push_back( mParticlesThisEvent[i].c_str() );
+		 if ( mParticlesThisEvent[i].find("plu")!=std::string::npos ) Qjet[0]++;
+		 else if ( mParticlesThisEvent[i].find("min")!=std::string::npos || mParticlesThisEvent[i].find("plb")!=std::string::npos ) Qjet[0]--;
+		 else if ( mParticlesThisEvent[i].find("zer")!=std::string::npos || mParticlesThisEvent[i].find("zrb")!=std::string::npos ) ;
+		 tmpInt = tParticleType->GetNumberQ()-tParticleType->GetNumberAQ()+tParticleType->GetNumberS()-tParticleType->GetNumberAS();
+		 if( tmpInt ==3 ) Bjet[0]++;
+		 else if( tmpInt ==-3 ) Bjet[0]--;
+		 tmpInt = tParticleType->GetNumberS()-tParticleType->GetNumberAS();
+		 if( tmpInt ==1 ) Sjet[0]--; //  for quark s: S=-1
+		 else if( tmpInt ==-1 ) Sjet[0]++;
+	       }
+	   }
          control++;
          if(control>100) break;
-      }while( Qjet[0]!=0 || Sjet[0]!=0 || Bjet[0]!=0 || Qjet[1]!=0 || Sjet[1]!=0 || Bjet[1]!=0  );
+      }while( Qjet[0]!=0 || Sjet[0]!=0 || Bjet[0]!=0 || Qjet[1]!=0 || Sjet[1]!=0 || Bjet[1]!=0  || masses[0].size()<4 || masses[1].size()<4 );
       if (control>100)
       {
          mParticlesThisEvent.clear();
@@ -337,15 +337,17 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
          control =0;
       double masses0 [masses[0].size()];
       double masses1 [masses[1].size()];
-      for(int j=0;j<masses[0].size();++j) masses0[j] = masses[0][j];
-      for(int j=0;j<masses[1].size();++j) masses1[j] = masses[1][j];
+      double totalMass=0;
+      for(int j=0;j<masses[0].size();++j) {masses0[j] = masses[0][j]; totalMass+=masses[0][j];}
+      for(int j=0;j<masses[1].size();++j) {masses1[j] = masses[1][j]; totalMass+=masses[1][j];}
       TLorentzVector* tmp;
       TLorentzVector en;
       double divideEn[] = {1,1}; // 0: energy of particles, 1: boostenergy
+
       do
       {
          // generate total momentum
-         TotEnergy = Ptot->GetRandom();
+         TotEnergy = totalMass+Ptot->GetRandom();
          en.SetE(TotEnergy*(divideEn[0]/(2.*(divideEn[0]+divideEn[1]))));
          control++;
       }
@@ -424,7 +426,7 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
       }
 
       // get total momentum
-      TotEnergy = Ptot->GetRandom(totalMass+1,totalMass+100); //include mass of the particles in the range
+      TotEnergy = totalMass+Ptot->GetRandom(); //include mass of the particles in the rang
 
       //set starting values to distribute
       en[0]=TotEnergy; en[1]=0.0;en[2]=0.0;en[3]=0.0; //0 - energy, 1- px, 2-py, 3-px
@@ -513,7 +515,7 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
       for(int j=0;j<masses[0].size();++j){ masses0[j] = masses[0][j]; totalMass0 += masses0[j];}
       for(int j=0;j<masses[1].size();++j){ masses1[j] = masses[1][j]; totalMass1 += masses1[j];}
       //****************************
-      if(totalMass0<totalMass1) totalMass0=totalMass1;
+      double totalMass = totalMass0+totalMass1;
 
       vector4 en;
       long int seed = time(NULL);
@@ -521,7 +523,7 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
       vector4 *avec1 = new vector4[masses[1].size()];
 
       // get total momentum
-      TotEnergy = Ptot->GetRandom(totalMass0+1,totalMass0+100); //include mass of the particles in the range
+      TotEnergy = Ptot->GetRandom()+totalMass; //include mass of the particles in the range
 
       //set starting values to distribute
       en[0]=TotEnergy/4.; en[1]=0.0;en[2]=0.0;en[3]=0.0; //0 - energy, 1- px, 2-py, 3-px
@@ -597,6 +599,7 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
       vector<double> masses[2];
       vector<string> names[2];
       int Qjet[2],Bjet[2],Sjet[2];
+      control=0;
       do
       {
          if(masses[0].size() > 0 || masses[1].size() > 0 )
@@ -644,10 +647,10 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
                if( tmpInt ==1 ) Sjet[0]--; //  for quark s: S=-1
                else if( tmpInt ==-1 ) Sjet[0]++;
             }
-         }
+         } 
          control++;
-         if(control>100) break;
-      }while( Qjet[0]!=0 || Sjet[0]!=0 || Bjet[0]!=0 || Qjet[1]!=0 || Sjet[1]!=0 || Bjet[1]!=0  );
+         if(control>100) { break;}
+      }while( Qjet[0]!=0 || Sjet[0]!=0 || Bjet[0]!=0 || Qjet[1]!=0 || Sjet[1]!=0 || Bjet[1]!=0  || masses[0].size()<4 || masses[1].size()<4);
       if (control>100)
       {
          mParticlesThisEvent.clear();
@@ -670,19 +673,18 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
          totalMass1 += masses1[j];
       }
       //****************************
-      if(totalMass0<totalMass1) totalMass0=totalMass1;
+  
+      double totalMass = totalMass0+totalMass1;
 
       vector4 en;
       long int seed = time(NULL);
       vector4 *avec0 = new vector4[masses[0].size()];
       vector4 *avec1 = new vector4[masses[1].size()];
-
       // get total momentum
-      TotEnergy = Ptot->GetRandom(totalMass0+1,totalMass0+100); //include mass of the particles in the range
+      TotEnergy = Ptot->GetRandom()+totalMass; //include mass of the particles in the range
 
       //set starting values to distribute
       en[0]=TotEnergy/4.; en[1]=0.0;en[2]=0.0;en[3]=0.0; //0 - energy, 1- px, 2-py, 3-px
-
       int checkE = 1;
       do{
          //first jet
@@ -696,16 +698,16 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
          checkE = 1;
          for(int i=0;i<masses[0].size();i++){
             if(avec0[i][0]<=0) {
-               checkE = 0; //cout<<"Negative energy!"<<endl;
+              checkE = 0; //cout<<"Negative energy!"<<endl;
             }
          }
          for(int i=0;i<masses[1].size();i++){
             if(avec1[i][0]<=0) {
-               checkE = 0; //cout<<"Negative energy!"<<endl;
+              checkE = 0; //cout<<"Negative energy!"<<endl;
             }
          }
       }while(!checkE);
-
+	
       // generate boost momentum
       double phi, eta, theta, p1[3], p2[3], Ejet1, Ejet2;
       phi = mRandom->Uniform(0,2*TMath::Pi());
@@ -719,7 +721,6 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
       p2[1] = TotEnergy/4./masses[1].size() * TMath::Sin(theta) * TMath::Cos(phi) ;
       p2[2] = TotEnergy/4./masses[1].size() * TMath::Cos(theta) ;
       Ejet2 = TotEnergy/4./masses[1].size();
-
       TLorentzVector* tmp = new TLorentzVector();
       for(int i=0;i<masses[0].size();i++)
       {
