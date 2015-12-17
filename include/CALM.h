@@ -12,7 +12,6 @@
 #include "Particle.h"
 #include "THGlobal.h"
 #include "TF1.h"
-//#include <fstream>
 //--------reggae
 #include "reggae.h"
 #include "specrel.h"
@@ -37,9 +36,9 @@ class CALM {
 		double* mXYZ; // to generate distance from primary vertex 
 		int* mNpartkinds; // number of particles for each kind
 		string** mNames; // names of particles to be generated
-		TF1* Ptot; //Total momentum to be distributed among particles
+		TF1* Etot; //Total momentum to be distributed among particles
       // values for this event
-      vector<string> mParticlesThisEvent; 
+      vector<string> mParticlesThisEvent;
 };
 
 #endif
