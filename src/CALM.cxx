@@ -118,15 +118,13 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
       TGenPhaseSpace event;
       Particle* tParticle;
       double masses[Nsum];
-      double totalMass = 0;
       for (int i=0;i<Nsum;i++) {
          masses[i]=aPartDB->GetParticleType(mParticlesThisEvent[i].c_str())->GetMass();
-         totalMass+=masses[i];
       }
       do
       {
          // generate total energy
-         TotEnergy = totalMass+Etot->GetRandom();
+         TotEnergy = Etot->GetRandom();
          en.SetE(TotEnergy);
          control++;
       }
@@ -173,7 +171,6 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
       int it=0;
       vector<double> masses[2];
       vector<string> names[2];
-      double totalMass =0;
       do
       {
          if(masses[0].size() > 0 || masses[1].size()>0 )
@@ -201,11 +198,9 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
       double masses1 [masses[1].size()];
       for(int j=0;j<masses[0].size();++j) {
          masses0[j] = masses[0][j];
-         totalMass += masses0[j];
       }
       for(int j=0;j<masses[1].size();++j) {
          masses1[j] = masses[1][j];
-         totalMass+= masses1[j];
       }
       TLorentzVector* tmp;
       TLorentzVector en;
@@ -214,7 +209,7 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
       {
          // generate total momentum
 
-         TotEnergy = totalMass + Etot->GetRandom();
+         TotEnergy = Etot->GetRandom();
          en.SetE(TotEnergy*(divideEn[0]/(2.*(divideEn[0]+divideEn[1]))));
          control++;
       }
@@ -346,9 +341,8 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
          control =0;
       double masses0 [masses[0].size()];
       double masses1 [masses[1].size()];
-      double totalMass=0;
-      for(int j=0;j<masses[0].size();++j) {masses0[j] = masses[0][j]; totalMass+=masses[0][j];}
-      for(int j=0;j<masses[1].size();++j) {masses1[j] = masses[1][j]; totalMass+=masses[1][j];}
+      for(int j=0;j<masses[0].size();++j) {masses0[j] = masses[0][j];}
+      for(int j=0;j<masses[1].size();++j) {masses1[j] = masses[1][j];}
       TLorentzVector* tmp;
       TLorentzVector en;
       double divideEn[] = {1,1}; // 0: energy of particles, 1: boostenergy
@@ -356,7 +350,7 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
       do
       {
          // generate total momentum
-         TotEnergy = totalMass+Etot->GetRandom();
+         TotEnergy = Etot->GetRandom();
          en.SetE(TotEnergy*(divideEn[0]/(2.*(divideEn[0]+divideEn[1]))));
          control++;
       }
@@ -428,14 +422,12 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
       long int seed = time(NULL);
       double *masses = new double[Nsum]; //amass
       vector4 *avec = new vector4[Nsum];
-      double totalMass = 0;
       for (int i=0;i<Nsum;i++){
          masses[i]=aPartDB->GetParticleType(mParticlesThisEvent[i].c_str())->GetMass();
-         totalMass += masses[i];
       }
 
       // get total momentum
-      TotEnergy = totalMass+Etot->GetRandom(); //include mass of the particles in the rang
+      TotEnergy = Etot->GetRandom(); //include mass of the particles in the rang
 
       //set starting values to distribute
       en[0]=TotEnergy; en[1]=0.0;en[2]=0.0;en[3]=0.0; //0 - energy, 1- px, 2-py, 3-px
@@ -522,12 +514,9 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
       }while( masses[0].size() < 4 || masses[1].size() < 4);
       double masses0 [masses[0].size()];
       double masses1 [masses[1].size()];
-      double totalMass0 = 0;
-      double totalMass1 = 0;
-      for(int j=0;j<masses[0].size();++j){ masses0[j] = masses[0][j]; totalMass0 += masses0[j];}
-      for(int j=0;j<masses[1].size();++j){ masses1[j] = masses[1][j]; totalMass1 += masses1[j];}
+      for(int j=0;j<masses[0].size();++j){ masses0[j] = masses[0][j];}
+      for(int j=0;j<masses[1].size();++j){ masses1[j] = masses[1][j];}
       //****************************
-      double totalMass = totalMass0+totalMass1;
 
       vector4 en;
       long int seed = time(NULL);
@@ -535,7 +524,7 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
       vector4 *avec1 = new vector4[masses[1].size()];
 
       // get total momentum
-      TotEnergy = Etot->GetRandom()+totalMass; //include mass of the particles in the range
+      TotEnergy = Etot->GetRandom(); //include mass of the particles in the range
 
       //set starting values to distribute
       en[0]=TotEnergy/4.; en[1]=0.0;en[2]=0.0;en[3]=0.0; //0 - energy, 1- px, 2-py, 3-px
@@ -677,28 +666,22 @@ int CALM::GenerateParticles(ParticleDB* aPartDB, int aMultBinMin, int aMultBinMa
          control =0;
       double masses0 [masses[0].size()];
       double masses1 [masses[1].size()];
-      double totalMass0 = 0;
-      double totalMass1 = 0;
       for(int j=0;j<masses[0].size();++j)
       {
          masses0[j] = masses[0][j];
-         totalMass0 += masses0[j];
       }
       for(int j=0;j<masses[1].size();++j)
       {
          masses1[j] = masses[1][j];
-         totalMass1 += masses1[j];
       }
       //****************************
-  
-      double totalMass = totalMass0+totalMass1;
 
       vector4 en;
       long int seed = time(NULL);
       vector4 *avec0 = new vector4[masses[0].size()];
       vector4 *avec1 = new vector4[masses[1].size()];
       // get total momentum
-      TotEnergy = Etot->GetRandom()+totalMass; //include mass of the particles in the range
+      TotEnergy = Etot->GetRandom(); //include mass of the particles in the range
 
       //set starting values to distribute
       en[0]=TotEnergy/4.; en[1]=0.0;en[2]=0.0;en[3]=0.0; //0 - energy, 1- px, 2-py, 3-px
